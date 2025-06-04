@@ -1,0 +1,726 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <style>
+        .heater-input {
+            margin-bottom: 10px;
+        }
+
+        .configuration-container {
+            margin-top: 50px;
+        }
+
+        .configuration-container .form-control {
+            margin-bottom: 10px;
+        }
+
+        .row+.row {
+            margin-top: 1rem;
+        }
+
+        .range-slider {
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .heater-input-submit {
+            margin-top: 1rem;
+        }
+
+        .input-group-text {
+            min-width: 100px;
+        }
+
+        [v-cloak] {
+            display: none;
+        }
+
+        /* The switch - the box around the slider */
+        .card-body {
+            text-align: center;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 120px;
+            height: 68px;
+        }
+
+        /* Hide default HTML checkbox */
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        /* The slider */
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 52px;
+            width: 52px;
+            left: 8px;
+            bottom: 8px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        input:checked+.slider {
+            background-color: #2196F3;
+        }
+
+        input:focus+.slider {
+            box-shadow: 0 0 1px #2196F3;
+        }
+
+        input:checked+.slider:before {
+            -webkit-transform: translateX(52px);
+            -ms-transform: translateX(52px);
+            transform: translateX(52px);
+        }
+
+        /* Rounded sliders */
+        .slider.round {
+            border-radius: 34px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+    </style>
+
+    <script src="https://unpkg.com/vue@2.6.14/dist/vue.js"></script>
+    <script src="https://unpkg.com/vue-i18n@8.27.1/dist/vue-i18n.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.bundle.js"></script>
+    <script src="https://unpkg.com/vue-i18n@8.27.1/dist/vue-i18n.js"></script>
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+        integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div id="app">
+        <div class="container-fluid" v-cloak>
+            <div class="row">
+                <div class="col">
+                    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                        <a class="navbar-brand" href="#">OpenAger</a>
+                        <button class="navbar-toggler" type="button" data-toggle="collapse"
+                            data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false"
+                            aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                            <ul class="navbar-nav  dropdown-menu-right">
+                                <li class="nav-item dropdown ">
+                                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink"
+                                        role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        {{ $t("language") }}
+                                    </a>
+                                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                        <a class="dropdown-item" href="#" v-on:click="pl">pl</a>
+                                        <a class="dropdown-item" href="#" v-on:click="en">en</a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </nav>
+                </div>
+
+
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <div class="card-deck mb-12 text-center">
+                        <div class="card mb-3 shadow-sm">
+                            <div class="card-header">
+                                <h4 class="my-0 font-weight-normal">Temp</h4>
+                            </div>
+                            <div class="card-body">
+                                <h1 class="card-title pricing-card-title">{{ temp }} <small
+                                        class="text-muted">°C</small>
+                                </h1>
+                            </div>
+                        </div>
+                        <div class="card mb-3 shadow-sm">
+                            <div class="card-header">
+                                <h4 class="my-0 font-weight-normal">Humidity</h4>
+                            </div>
+                            <div class="card-body">
+                                <h1 class="card-title pricing-card-title">{{ humidity }} <small
+                                        class="text-muted">°C</small>
+                                </h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row justify-content-center">
+
+                <div class="col-md-2">
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-header">
+                            <h4 class="my-0 font-weight-normal">Fridge</h4>
+                        </div>
+                        <div class="card-body">
+                            <label class="switch">
+                                <input type="checkbox" v-model="fridgeState" v-on:change="setFridge">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-header">
+                            <h4 class="my-0 font-weight-normal">Humidifier</h4>
+                        </div>
+                        <div class="card-body">
+                            <label class="switch">
+                                <input type="checkbox" v-model="humidifierState" v-on:change="setHumidifier">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-2">
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-header">
+                            <h4 class="my-0 font-weight-normal">Dehumidifier</h4>
+                        </div>
+                        <div class="card-body">
+                            <label class="switch">
+                                <input type="checkbox" v-model="dehumidifierState" v-on:change="setDehumidifier">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div>
+                <canvas id="myChart" width="400" height="200"></canvas>
+            </div>
+
+            <div class="configuration-container container-fluid" id="config">
+                <div class="row">
+                    <div class="col">
+                        <button class="btn btn-outline-secondary" type="button" data-toggle="collapse"
+                            data-target="#zmienne" aria-expanded="false" aria-controls="zmienne">
+                            {{ $t("settings") }}
+                        </button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="collapse" id="zmienne" data-parent="#config">
+                            <div class="card card-body container-fluid">
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <button type="button" class="btn btn-primary btn-lg" v-on:click="getCsv">
+                                            {{ $t("getCsv") }}</button>
+                                        <button type="button" class="btn btn-link" v-on:click="clearCsv">
+                                            {{ $t("resetCsv") }}</button>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="input-group col-md-6">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"> {{ $t("csvTimeFrame") }}</span>
+                                        </div>
+                                        <input class="form-control" v-model="csvTimeFrameInSeconds" type="number">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-outline-secondary" type="button"
+                                                v-on:click="setCsvTimeFrameInSeconds">{{ $t("set") }}</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="input-group col-md-6">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"> {{ $t("wifiSsid") }}</span>
+                                        </div>
+                                        <input class="form-control" v-model="wifiSsid" type="text">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-outline-secondary" type="button"
+                                                v-on:click="setWifiSsid">{{ $t("set") }}</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="input-group col-md-6">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">{{ $t("wifiPassword") }}</span>
+                                        </div>
+                                        <input class="form-control" v-model="wifiPassword" type="text">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-outline-secondary" type="button"
+                                                v-on:click="setWifiPassword">{{ $t("set") }}</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="input-group col-md-6">
+                                        <a href="https://www.pushsafer.com/">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">{{ $t("pushCode") }}</span>
+                                            </div>
+                                        </a>
+                                        <input class="form-control" v-model="pushNotificationCode" type="text">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-outline-secondary" type="button"
+                                                v-on:click="setPushNotificationCode">{{ $t("set") }}</button>
+                                        </div>
+                                        <div class="ml-2">
+                                            <button class="btn btn-secondary" type="button"
+                                                v-on:click="testPushNotificationCode">{{ $t("test") }}</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="input-group col-md-6">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"> {{ $t("fridgeMinCycleInSeconds") }}</span>
+                                        </div>
+                                        <input class="form-control" v-model="fridgeMinCycleInSeconds" type="number">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-outline-secondary" type="button" v-on:click="setFridgeMinCycleInSeconds">{{ $t("set") }}</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="input-group col-md-6">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"> {{ $t("fridgeMinPauseInSeconds") }}</span>
+                                        </div>
+                                        <input class="form-control" v-model="fridgeMinPauseInSeconds" type="number">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-outline-secondary" type="button" v-on:click="setFridgeMinPauseInSeconds">{{ $t("set") }}</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="input-group col-md-6">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"> {{ $t("fridgeOnTemperatureInCelcius") }}</span>
+                                        </div>
+                                        <input class="form-control" v-model="fridgeOnTemperatureInCelcius" type="number">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-outline-secondary" type="button" v-on:click="setFridgeOnTemperatureInCelcius">{{ $t("set") }}</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="input-group col-md-6">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"> {{ $t("fridgeOffTemperatureInCelcius") }}</span>
+                                        </div>
+                                        <input class="form-control" v-model="fridgeOffTemperatureInCelcius" type="number">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-outline-secondary" type="button" v-on:click="setFridgeOffTemperatureInCelcius">{{ $t("set") }}</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="input-group col-md-6">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"> {{ $t("humidifierOffPercentage") }}</span>
+                                        </div>
+                                        <input class="form-control" v-model="humidifierOffPercentage" type="number">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-outline-secondary" type="button" v-on:click="setHumidifierOffPercentage">{{ $t("set") }}</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="input-group col-md-6">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"> {{ $t("humidifierOnPercentage") }}</span>
+                                        </div>
+                                        <input class="form-control" v-model="humidifierOnPercentage" type="number">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-outline-secondary" type="button" v-on:click="setHumidifierOnPercentage">{{ $t("set") }}</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="input-group col-md-6">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"> {{ $t("dehumidifierOnPercentage") }}</span>
+                                        </div>
+                                        <input class="form-control" v-model="dehumidifierOnPercentage" type="number">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-outline-secondary" type="button" v-on:click="setDehumidifierOnPercentage">{{ $t("set") }}</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="input-group col-md-6">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"> {{ $t("dehumidifierOffPercentage") }}</span>
+                                        </div>
+                                        <input class="form-control" v-model="dehumidifierOffPercentage" type="number">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-outline-secondary" type="button" v-on:click="setDehumidifierOffPercentage">{{ $t("set") }}</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <script type="module">
+
+        Vue.use(VueI18n)
+
+        var i18n = new VueI18n({
+            locale: 'pl',
+            messages: {
+                en: {
+                    language: 'Język',
+                   
+                    set: "Set",
+                    notifications: "Notifications",
+                    wifiPassword: "Wifi password",
+                    pushCode: "Push code",
+                    test: "Test",
+                    limits: "Limits",
+                    settings: "Settings",
+                    getCsv: "Get CSV",
+                    resetCsv: "Reset CSV",
+                    csvTimeFrame: "CSV time frame (s)",
+                    wifiSsid: "Wifi SSID",
+                    on: "On",
+                    off: "Off",
+                }
+            }
+        })
+
+        var timeFormat = 'HH:mm:ss';
+
+        var config = {
+            type: 'line',
+            data: {
+                datasets: [
+                    {
+                        label: 'Temperature',
+                        data: [],
+                        fill: false,
+                        borderColor: 'red'
+                    },
+                    {
+                        label: 'Humidity',
+                        data: [],
+                        fill: false,
+                        borderColor: 'blue'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    xAxes: [{
+                        type: "time",
+                        distribution: 'series',
+                        time: {
+                            tooltipFormat: timeFormat,
+                            displayFormats: {
+                                second: timeFormat,
+                                millisecond: timeFormat,
+                                minute: timeFormat
+
+                            }
+                        },
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Time'
+                        }
+                    }]
+                }
+            }
+        };
+
+        window.onload = function () {
+            var ctx = document.getElementById("myChart").getContext("2d");
+            window.myLine = new Chart(ctx, config);
+        };
+
+        var app = new Vue({
+            i18n: i18n,
+            el: '#app',
+            data: {
+                temp: 0,
+                humidity: 0,
+                fridgeState: false,
+                humidifierState: false,
+                dehumidifierState: false,
+                
+                lastReadTime: 0,
+                sensorOptions: [],
+                csvTimeFrameInSeconds: 0,
+                pushNotificationCode: "",
+                wifiSsid: "",
+                wifiPassword: "",
+
+                fridgeMinCycleInSeconds: 0,
+                fridgeMinPauseInSeconds: 0,
+                fridgeOnTemperatureInCelcius: 0,
+                fridgeOffTemperatureInCelcius: 0,
+                humidifierOffPercentage: 0,
+                humidifierOnPercentage: 0,
+                dehumidifierOnPercentage: 0,
+                dehumidifierOffPercentage: 0
+            },
+            mounted: function () {
+                this.interval = setInterval(() => {
+                    axios
+                        .get('/data')
+                        .then(response => {
+                            this.temp = response.data.temp;
+                            this.humidity = response.data.humidity;
+
+                            this.fridgeState = response.data.fridgeState;
+                            this.humidifierState = response.data.humidifierState;
+                            this.dehumidifierState = response.data.dehumidifierState;
+
+
+                            var currentTime = (new Date()).getTime();
+                            if (this.lastReadTime == 0 || (currentTime - this.lastReadTime) > 5000) {
+                                if (window.myLine.data.datasets[0].data.length > 100) {
+                                    window.myLine.data.datasets[0].data.shift()
+                                }
+                                if (window.myLine.data.datasets[1].data.length > 100) {
+                                    window.myLine.data.datasets[1].data.shift()
+                                }
+
+                                window.myLine.data.datasets[0].data.push({
+                                    x: new Date(), y: this.temp
+                                });
+
+                                window.myLine.data.datasets[1].data.push({
+                                    x: new Date(), y: this.humidity
+                                });
+
+                                this.lastReadTime = currentTime;
+                            }
+
+                            window.myLine.update();
+                        });
+                }, 1000);
+            
+            this.refreshOtherConfiguration();
+
+            },
+            methods: {
+                refreshOtherConfiguration: function (event) {
+                    axios
+                        .get('/otherConfiguration')
+                        .then(response => {
+
+                            this.csvTimeFrameInSeconds = response.data.csvTimeFrameInSeconds;
+                            this.fridgeMinCycleInSeconds = response.data.fridgeMinCycleInSeconds;
+                            this.fridgeMinPauseInSeconds = response.data.fridgeMinPauseInSeconds;
+                            this.fridgeOnTemperatureInCelcius = response.data.fridgeOnTemperatureInCelcius;
+                            this.fridgeOffTemperatureInCelcius = response.data.fridgeOffTemperatureInCelcius;
+                            this.humidifierOffPercentage = response.data.humidifierOffPercentage;
+                            this.humidifierOnPercentage = response.data.humidifierOnPercentage;
+                            this.dehumidifierOnPercentage = response.data.dehumidifierOnPercentage;
+                            this.dehumidifierOffPercentage = response.data.dehumidifierOffPercentage;
+                        });
+                },
+                setDehumidifier: function (event) {
+                    axios
+                        .get('/set', {
+                            params: {
+                                dehumidifierState: this.dehumidifierState ? 1 : 0
+                            }
+                        })
+                },
+                setHumidifier: function (event) {
+                    axios
+                        .get('/set', {
+                            params: {
+                                humidifierState: this.humidifierState ? 1 : 0
+                            }
+                        })
+                },
+                setFridge: function (event) {
+                    axios
+                        .get('/set', {
+                            params: {
+                                fridgeState: this.fridgeState ? 1 : 0
+                            }
+                        })
+                },
+                setWifiSsid: function (event) {
+                    axios
+                        .get('/set', {
+                            params: {
+                                wifiSsid: this.wifiSsid
+                            }
+                        })
+                },
+                setWifiPassword: function (event) {
+                    axios
+                        .get('/set', {
+                            params: {
+                                wifiPassword: this.wifiPassword
+                            }
+                        })
+                },
+                setPushNotificationCode: function (event) {
+                    axios
+                        .get('/set', {
+                            params: {
+                                pushNotificationCode: this.pushNotificationCode
+                            }
+                        })
+                },
+                setCsvTimeFrameInSeconds: function (event) {
+                    axios
+                        .get('/set', {
+                            params: {
+                                csvTimeFrameInSeconds: this.csvTimeFrameInSeconds
+                            }
+                        })
+                },
+                
+                setFridgeMinCycleInSeconds: function (event) {
+                    axios
+                        .get('/set', {
+                            params: {
+                                fridgeMinCycleInSeconds: this.fridgeMinCycleInSeconds
+                            }
+                        });
+                },
+                setFridgeMinPauseInSeconds: function (event) {
+                    axios
+                        .get('/set', {
+                            params: {
+                                fridgeMinPauseInSeconds: this.fridgeMinPauseInSeconds
+                            }
+                        });
+                },
+                setFridgeOnTemperatureInCelcius: function (event) {
+                    axios
+                        .get('/set', {
+                            params: {
+                                fridgeOnTemperatureInCelcius: this.fridgeOnTemperatureInCelcius
+                            }
+                        });
+                },
+                setFridgeOffTemperatureInCelcius: function (event) {
+                    axios
+                        .get('/set', {
+                            params: {
+                                fridgeOffTemperatureInCelcius: this.fridgeOffTemperatureInCelcius
+                            }
+                        });
+                },
+                setHumidifierOffPercentage: function (event) {
+                    axios
+                        .get('/set', {
+                            params: {
+                                humidifierOffPercentage: this.humidifierOffPercentage
+                            }
+                        });
+                },
+                setHumidifierOnPercentage: function (event) {
+                    axios
+                        .get('/set', {
+                            params: {
+                                humidifierOnPercentage: this.humidifierOnPercentage
+                            }
+                        });
+                },
+                setDehumidifierOnPercentage: function (event) {
+                    axios
+                        .get('/set', {
+                            params: {
+                                dehumidifierOnPercentage: this.dehumidifierOnPercentage
+                            }
+                        });
+                },
+                setDehumidifierOffPercentage: function (event) {
+                    axios
+                        .get('/set', {
+                            params: {
+                                dehumidifierOffPercentage: this.dehumidifierOffPercentage
+                            }
+                        });
+                },
+                testPushNotificationCode: function (event) {
+                    axios
+                        .get('/notificationTest');
+                },
+                clearCsv: function (event) {
+                    if (confirm("Na pewno chcesz wyzerować plik?")) {
+                        axios
+                            .get('/clearCsv');
+                    }
+                },
+                getCsv: function (event) {
+                    window.location.href = "/csv";
+                },
+                pl: function (event) {
+                    i18n.locale = "pl";
+                },
+                en: function (event) {
+                    i18n.locale = "en";
+                },
+            }
+        });
+
+
+    </script>
+
+</body>
+
+</html>
