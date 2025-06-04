@@ -7,12 +7,14 @@ SwitcherTaskClass::SwitcherTaskClass(SettingsClass &settingsClass, DataContextCl
 	pinMode(_settingsClass.dehumidifierRelayPin, OUTPUT);
 	pinMode(_settingsClass.fanInsidePin, OUTPUT);
 	pinMode(_settingsClass.fanOutsidePin, OUTPUT);
+	pinMode(_settingsClass.uvLightPin, OUTPUT);
 
 	digitalWrite(_settingsClass.fridgeRelayPin, HIGH);
 	digitalWrite(_settingsClass.humidifierRelayPin, HIGH);
 	digitalWrite(_settingsClass.dehumidifierRelayPin, HIGH);
 	digitalWrite(_settingsClass.fanInsidePin, HIGH);
 	digitalWrite(_settingsClass.fanOutsidePin, HIGH);
+	digitalWrite(_settingsClass.uvLightPin, HIGH);
 }
 
 uint32_t SwitcherTaskClass::timeOfNextCheck()
@@ -57,6 +59,27 @@ void SwitcherTaskClass::exec()
 		digitalWrite(_settingsClass.humidifierRelayPin, _settingsClass.humidifierState ? LOW : HIGH);
 		_settingsClass.humidifierStateChanged = false;
 		_context.humidifierLastStateChangeTime = millis();
+	}
+
+	if (_settingsClass.uvLightStateChanged)
+	{
+		digitalWrite(_settingsClass.uvLightPin, _settingsClass.uvLightState ? LOW : HIGH);
+		_settingsClass.uvLightStateChanged = false;
+		_context.uvLightLastStateChangeTime = millis();
+	}
+
+	if (_settingsClass.fanInsideStateChanged)
+	{
+		digitalWrite(_settingsClass.fanInsidePin, _settingsClass.fanInsideState ? LOW : HIGH);
+		_settingsClass.fanInsideStateChanged = false;
+		_context.fanInsideLastStateChangeTime = millis();
+	}
+
+	if (_settingsClass.fanOutsideStateChanged)
+	{
+		digitalWrite(_settingsClass.fanOutsidePin, _settingsClass.fanOutsideState ? LOW : HIGH);
+		_settingsClass.fanOutsideStateChanged = false;
+		_context.fanOutsideLastStateChangeTime = millis();
 	}
 }
 

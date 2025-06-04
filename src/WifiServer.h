@@ -31,6 +31,9 @@ private:
 	const char *_fridgeState = "fridgeState";
 	const char *_humidifierState = "humidifierState";
 	const char *_dehumidifierState = "dehumidifierState";
+	const char *_uvLightState = "uvLightState";
+	const char *_fanInsideState = "fanInsideState";
+	const char *_fanOutsideState = "fanOutsideState";
 
 	const char *_csvTimeFrameInSeconds = "csvTimeFrameInSeconds";
 	

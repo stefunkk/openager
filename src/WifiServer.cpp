@@ -76,10 +76,12 @@ void WifiServerClass::configurePages()
     char data[1000];
     sprintf(data, "{ "
       "\"temp\": %.02f, \"humidity\": %.02f, "
-      "\"fridgeState\": %i, \"dehumidifierState\": %i, \"humidifierState\": %i "
+      "\"fridgeState\": %i, \"dehumidifierState\": %i, \"humidifierState\": %i, "
+      "\"uvLightState\": %i, \"fanInsideState\": %i, \"fanOutsideState\": %i "
       "}",
-    _sensorData.temperature, _sensorData.humidity, 
-    _settings.fridgeState, _settings.dehumidifierState, _settings.humidifierState);
+      _sensorData.temperature, _sensorData.humidity, 
+      _settings.fridgeState, _settings.dehumidifierState, _settings.humidifierState,
+      _settings.uvLightState, _settings.fanInsideState, _settings.fanOutsideState);
 
     request->send(200, "application/json", data);
   });
@@ -127,6 +129,27 @@ void WifiServerClass::configureInputs()
       int state = request->getParam(_humidifierState)->value().toInt();
       _settings.humidifierState = state > 0 ? HIGH : LOW;
       _settings.humidifierStateChanged = true;
+    }
+    
+    if (request->hasParam(_uvLightState))
+    {
+      int state = request->getParam(_uvLightState)->value().toInt();
+      _settings.uvLightState = state > 0 ? HIGH : LOW;
+      _settings.uvLightStateChanged = true;
+    }
+
+    if (request->hasParam(_fanInsideState))
+    {
+      int state = request->getParam(_fanInsideState)->value().toInt();
+      _settings.fanInsideState = state > 0 ? HIGH : LOW;
+      _settings.fanInsideStateChanged = true;
+    }
+
+    if (request->hasParam(_fanOutsideState))
+    {
+      int state = request->getParam(_fanOutsideState)->value().toInt();
+      _settings.fanOutsideState = state > 0 ? HIGH : LOW;
+      _settings.fanOutsideStateChanged = true;
     }
     
     if (request->hasParam(_dehumidifierState))
@@ -208,6 +231,25 @@ void WifiServerClass::configureInputs()
       _settings.dehumidifierOffPercentage = dehumidifierOff;
     }
     
+    if (request->hasParam(_uvLightState))
+    {
+      int state = request->getParam(_uvLightState)->value().toInt();
+      _settings.uvLightState = state > 0 ? HIGH : LOW;
+      _settings.uvLightStateChanged = true;
+    }
+    if (request->hasParam(_fanInsideState))
+    {
+      int state = request->getParam(_fanInsideState)->value().toInt();
+      _settings.fanInsideState = state > 0 ? HIGH : LOW;
+      _settings.fanInsideStateChanged = true;
+    }
+    if (request->hasParam(_fanOutsideState))
+    {
+      int state = request->getParam(_fanOutsideState)->value().toInt();
+      _settings.fanOutsideState = state > 0 ? HIGH : LOW;
+      _settings.fanOutsideStateChanged = true;
+    }
+
     _configurationService.saveConfiguration();
 
     request->send(200, "text/html");

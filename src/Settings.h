@@ -35,11 +35,20 @@ public:
     bool humidifierState = LOW;
     bool humidifierStateChanged = false;
 
+    bool uvLightState = LOW;
+    bool uvLightStateChanged = false;
+
     int csvTimeFrameInSeconds = 0;
     
     char pushNotificationCode[100]= "";
 
     bool saveCsv = false;
+
+    bool fanInsideState = LOW;
+    bool fanInsideStateChanged = false;
+    
+    bool fanOutsideState = LOW;
+    bool fanOutsideStateChanged = false;
 };
 
 #endif // __SETTINGS_H__

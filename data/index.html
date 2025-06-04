@@ -207,7 +207,6 @@
                         </div>
                     </div>
                 </div>
-                
                 <div class="col-md-2">
                     <div class="card mb-4 shadow-sm">
                         <div class="card-header">
@@ -216,6 +215,48 @@
                         <div class="card-body">
                             <label class="switch">
                                 <input type="checkbox" v-model="dehumidifierState" v-on:change="setDehumidifier">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <!-- UV Light -->
+                <div class="col-md-2">
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-header">
+                            <h4 class="my-0 font-weight-normal">UV Light</h4>
+                        </div>
+                        <div class="card-body">
+                            <label class="switch">
+                                <input type="checkbox" v-model="uvLightState" v-on:change="setUvLight">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <!-- Fan Inside -->
+                <div class="col-md-2">
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-header">
+                            <h4 class="my-0 font-weight-normal">Fan Inside</h4>
+                        </div>
+                        <div class="card-body">
+                            <label class="switch">
+                                <input type="checkbox" v-model="fanInsideState" v-on:change="setFanInside">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <!-- Fan Outside -->
+                <div class="col-md-2">
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-header">
+                            <h4 class="my-0 font-weight-normal">Fan Outside</h4>
+                        </div>
+                        <div class="card-body">
+                            <label class="switch">
+                                <input type="checkbox" v-model="fanOutsideState" v-on:change="setFanOutside">
                                 <span class="slider round"></span>
                             </label>
                         </div>
@@ -501,6 +542,9 @@
                 fridgeState: false,
                 humidifierState: false,
                 dehumidifierState: false,
+                uvLightState: false,
+                fanInsideState: false,
+                fanOutsideState: false,
                 
                 lastReadTime: 0,
                 sensorOptions: [],
@@ -529,6 +573,9 @@
                             this.fridgeState = response.data.fridgeState;
                             this.humidifierState = response.data.humidifierState;
                             this.dehumidifierState = response.data.dehumidifierState;
+                            this.uvLightState = response.data.uvLightState;
+                            this.fanInsideState = response.data.fanInsideState;
+                            this.fanOutsideState = response.data.fanOutsideState;
 
 
                             var currentTime = (new Date()).getTime();
@@ -596,6 +643,30 @@
                         .get('/set', {
                             params: {
                                 fridgeState: this.fridgeState ? 1 : 0
+                            }
+                        })
+                },
+                setUvLight: function (event) {
+                    axios
+                        .get('/set', {
+                            params: {
+                                uvLightState: this.uvLightState ? 1 : 0
+                            }
+                        })
+                },
+                setFanInside: function (event) {
+                    axios
+                        .get('/set', {
+                            params: {
+                                fanInsideState: this.fanInsideState ? 1 : 0
+                            }
+                        })
+                },
+                setFanOutside: function (event) {
+                    axios
+                        .get('/set', {
+                            params: {
+                                fanOutsideState: this.fanOutsideState ? 1 : 0
                             }
                         })
                 },

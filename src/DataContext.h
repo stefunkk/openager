@@ -17,6 +17,9 @@ public:
     unsigned long fridgeOffLastStateChangeTime;
     unsigned long humidifierLastStateChangeTime;
     unsigned long dehumidifierLastStateChangeTime;
+    unsigned long uvLightLastStateChangeTime;
+    unsigned long fanInsideLastStateChangeTime;
+    unsigned long fanOutsideLastStateChangeTime;
 
     String ipAddress = "";
     bool isIpShown = false;
