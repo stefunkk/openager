@@ -1,4 +1,4 @@
-# OpenStill
+# OpenAger
 
 Project for controlling dry ager. Developed for ESP32.
 
