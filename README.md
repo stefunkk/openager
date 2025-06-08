@@ -14,6 +14,10 @@ Parts (all available on aliexpress):
 
 ![Schematics](schematic.png)
 
+##  Installation
+
+You need to download Visual Studio together with PlatformIO and upload the files. 
+
 ## Web interface
 
 ![Screenshot](ss.png)
