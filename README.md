@@ -6,6 +6,8 @@ Project for controlling dry ager. Developed for ESP32.
 
 ##  Connections
 
+Connection of end devices is just a proposal, you can even use 12V for everything, relay don't care as long as you will put proper line in COM port.
+
 ![Schematics](schematic.png)
 
 ##  Installation
