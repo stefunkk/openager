@@ -16,9 +16,10 @@ You need to download Visual Studio together with PlatformIO and upload the files
 
 You need to get ip address from your router, or from the console of the device.
 
-Updates are possible via web interface http://[ip]/update
-Web serial with some debug values available on http://[ip]/webserial
-GPIO Viewer available on http://[ip]:8080
+
+* Updates are possible via web interface http://[ip]/update
+* Web serial with some debug values available on http://[ip]/webserial
+* GPIO Viewer available on http://[ip]:8080
 
 ## Web interface
 
