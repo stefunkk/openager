@@ -13,6 +13,7 @@ void WifiServerClass::connectToWifi()
 {
   WiFi.mode(WIFI_STA);
   
+  WiFi.setHostname("openager.local");   
   WiFi.begin(_settings.wifiSsid.c_str(), _settings.wifiPassword.c_str());
 
   _server.begin();
