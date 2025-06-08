@@ -33,9 +33,9 @@ There is a safety timeout for the fridge, by default it's set to 300 seconds.
 
 All available on aliexpress
 
-* SHT40 Temperature Humidity Sensor Module Probe Cable Waterproof Digital Capacitance Sensors 1M I2C Output (~5.5 EUR)
-* ESP32-CH340C-TYPEC (~3.75 EUR)
-* 6 channel relay module 5V (~3.58 EUR)
+* SHT40 Temperature Humidity Sensor Module Probe Cable Waterproof Digital Capacitance Sensors 1M I2C Output (~5.5 EUR) -  https://www.aliexpress.com/item/1005008035782468.html 
+* ESP32-CH340C-TYPEC (~3.75 EUR) - https://www.aliexpress.com/item/1005008212851634.html
+* 6 channel relay module 5V (~3.58 EUR) - https://www.aliexpress.com/item/10000000669335.html
 
 ## License
 
