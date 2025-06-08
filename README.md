@@ -16,10 +16,14 @@ You need to download Visual Studio together with PlatformIO and upload the files
 
 You need to get ip address from your router, or from the console of the device.
 
-
 * Updates are possible via web interface http://[ip]/update
 * Web serial with some debug values available on http://[ip]/webserial
 * GPIO Viewer available on http://[ip]:8080
+
+There is a safety timeout for the fridge, by default it's set to 300 seconds.
+
+* fridgeMinCycleInSeconds - you wont be able to turn off fridge before this time pass
+* fridgeMinPauseInSeconds - you wont be able to turn on fridge after it stops before this time pass 
 
 ## Web interface
 
