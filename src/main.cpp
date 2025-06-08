@@ -21,16 +21,17 @@
 
 #include <ElegantOTA.h>
 
+#include <AsyncWebSerial.h>
 #include <gpio_viewer.h>
 
 const int csvTimeFrameInSeconds = 30;
 const bool saveCsv = true;
 
 // // PIN settings
-const uint8_t Fridge = GPIO_NUM_13;
+const uint8_t Fridge = GPIO_NUM_26;
 const uint8_t Humidifier = GPIO_NUM_27;
 const uint8_t Dehumidifier = GPIO_NUM_14;
-const uint8_t UvLight = GPIO_NUM_26; // @TODO
+const uint8_t UvLight = GPIO_NUM_13; // @TODO
 const uint8_t FanOutside = GPIO_NUM_25; // @TODO
 const uint8_t FanInside = GPIO_NUM_33; // @TODO
 
@@ -53,14 +54,16 @@ AsyncWebServer server(80);
 
 Adafruit_SHT4x sht4 = Adafruit_SHT4x();
 GPIOViewer gpio_viewer;
+AsyncWebSerial webSerial;
 
 void setup()
 {
 	Serial.begin(115200);
+	webSerial.begin(&server);
 
 	ElegantOTA.begin(&server);    // Start ElegantOTA
 
-	auto *settings = new SettingsClass();
+	 auto *settings = new SettingsClass();
 
 	settings->wifiSsid = WifiSsid;
 	settings->wifiPassword = WifiPassword;
@@ -68,6 +71,10 @@ void setup()
 	settings->humidifierRelayPin = Humidifier;
 	settings->dehumidifierRelayPin = Dehumidifier;
 	settings->fanInsidePin = FanInside;
+
+	settings->fanInsideState = HIGH; 
+	settings->fanInsideStateChanged = true;
+
 	settings->fanOutsidePin = FanOutside;
 	settings->uvLightPin = UvLight;
 
@@ -95,11 +102,11 @@ void setup()
 	
 	static auto *sensorTask = new SensorTaskClass(sht4, *context, *sensorData);
 
-	static auto *switcherTask = new SwitcherTaskClass(*settings, *context);
+	static auto *switcherTask = new SwitcherTaskClass(*settings, *context, webSerial);
 
 	auto *dataTask = new DataTaskClass(*context, *fileService, *sensorData, *settings);
 
-	auto *controllerTask = new ControllerTaskClass(*sensorData, *settings, *context);
+	auto *controllerTask = new ControllerTaskClass(*sensorData, *settings, *context, webSerial);
 
 	auto *notificationTask = new NotificationTaskClass(*context, *settings);
 
@@ -123,7 +130,7 @@ void setup()
 	taskManager.registerEvent(sensorTask);
 
 	taskManager.registerEvent(dataTask);
-	taskManager.registerEvent(notificationTask);
+	//taskManager.registerEvent(notificationTask);
 	
 	taskManager.registerEvent(controllerTask);
 	taskManager.registerEvent(switcherTask);

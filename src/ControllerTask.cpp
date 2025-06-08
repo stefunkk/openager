@@ -1,6 +1,7 @@
 #include "ControllerTask.h"
 
-ControllerTaskClass::ControllerTaskClass(SensorDataClass &sensorData, SettingsClass &settings, DataContextClass &context) : _sensorData(sensorData), _settings(settings), _context(context)
+ControllerTaskClass::ControllerTaskClass(SensorDataClass &sensorData, SettingsClass &settings, DataContextClass &context,
+AsyncWebSerial &webSerial) : _sensorData(sensorData), _settings(settings), _context(context), _webSerial(webSerial)
 {
 }
 
@@ -18,6 +19,11 @@ void ControllerTaskClass::checkTemperatureLimit()
 
 void ControllerTaskClass::handleFridge()
 {
+	_webSerial.printf("Control temp: %.2f\n", _sensorData.temperature);
+	_webSerial.printf("Fridge state: %i\n", _settings.fridgeState);
+	_webSerial.printf("On temp: %.2f\n", _settings.fridgeOnTemperatureInCelcius);
+	_webSerial.printf("Off temp: %.2f\n", _settings.fridgeOffTemperatureInCelcius);
+
 	if (_sensorData.temperature > _settings.fridgeOnTemperatureInCelcius && _settings.fridgeState == false)
 	{
 		Serial.println("Temp too high, fridge on.");

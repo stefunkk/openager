@@ -73,7 +73,7 @@ void WifiServerClass::configurePages()
   });
 
   _server.on("/data", HTTP_GET, [this](AsyncWebServerRequest *request) {
-    char data[1000];
+    char data[1200];
     sprintf(data, "{ "
       "\"temp\": %.02f, \"humidity\": %.02f, "
       "\"fridgeState\": %i, \"dehumidifierState\": %i, \"humidifierState\": %i, "
@@ -101,7 +101,7 @@ void WifiServerClass::configureInputs()
   });
 
   _server.on("/otherConfiguration", HTTP_GET, [this](AsyncWebServerRequest *request) {
-    char data[1000];
+    char data[1200];
     sprintf(data, "{ "
       "\"fridgeMinCycleInSeconds\": %i, \"fridgeMinPauseInSeconds\": %i, "
       "\"fridgeOnTemperatureInCelcius\": %.02f, \"fridgeOffTemperatureInCelcius\": %.02f, "

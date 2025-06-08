@@ -171,8 +171,17 @@
                             </div>
                             <div class="card-body">
                                 <h1 class="card-title pricing-card-title">{{ humidity }} <small
-                                        class="text-muted">°C</small>
+                                        class="text-muted">%</small>
                                 </h1>
+                            </div>
+                        </div>
+                        <!-- Add this card next to your Temp card in the HTML: -->
+                        <div class="card mb-3 shadow-sm">
+                            <div class="card-header">
+                                <h4 class="my-0 font-weight-normal">Temp Δ/min</h4>
+                            </div>
+                            <div class="card-body">
+                                <h1 class="card-title pricing-card-title">{{ tempChangePerMinute.toFixed(2) }} <small class="text-muted">°C/min</small></h1>
                             </div>
                         </div>
                     </div>
@@ -560,7 +569,11 @@
                 humidifierOffPercentage: 0,
                 humidifierOnPercentage: 0,
                 dehumidifierOnPercentage: 0,
-                dehumidifierOffPercentage: 0
+                dehumidifierOffPercentage: 0,
+
+                tempChangePerMinute: 0,
+                lastTemp: null,
+                lastTempTime: null, // add this
             },
             mounted: function () {
                 this.interval = setInterval(() => {
@@ -604,6 +617,8 @@
             
             this.refreshOtherConfiguration();
 
+            this.lastTempTime = Date.now(); // initialize on mount
+            this.tempChangeInterval = setInterval(this.calculateTempChangePerMinute, 20000); // every 10 seconds
             },
             methods: {
                 refreshOtherConfiguration: function (event) {
@@ -786,6 +801,22 @@
                 en: function (event) {
                     i18n.locale = "en";
                 },
+                calculateTempChangePerMinute: function () {
+                    let now = Date.now();
+                    if (this.lastTemp !== null && this.lastTempTime !== null) {
+                        let secondsElapsed = (now - this.lastTempTime) / 1000;
+                        if (secondsElapsed > 0) {
+                            let tempDelta = this.temp - this.lastTemp;
+                            // Scale to per minute
+                            this.tempChangePerMinute = (tempDelta / secondsElapsed) * 60;
+                        }
+                    }
+                    this.lastTemp = this.temp;
+                    this.lastTempTime = now;
+                }
+            },
+            beforeDestroy() {
+                clearInterval(this.tempChangeInterval);
             }
         });
 
