@@ -2,6 +2,8 @@
 
 Project for controlling dry ager. Developed for ESP32.
 
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://buycoffee.to/stefunk)
+
 Parts (all available on aliexpress):
 
 - SHT40 Temperature Humidity Sensor Module Probe Cable Waterproof Digital Capacitance Sensors 1M I2C Output (~5.5 EUR)
